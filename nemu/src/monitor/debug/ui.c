@@ -40,15 +40,22 @@ static int cmd_help(char *args);
 
 static int cmd_si(char *args) {
 	char* arg = strtok(args, " ");
-
+	int num;
 	if (arg==NULL) {
-		printf("Need more arguments.\n");
-		return 1;
+		// printf("Need more arguments.\n");
+		num = 1;
+	} else {
+		num = atoi(arg);
 	}
-
-	int num = atoi(arg);
 	cpu_exec(num);
-	printf("Done.");
+	// printf("Done.");
+	return 0;
+};
+
+static int cmd_info(char *args) {
+	char *arg = strtok(args, " ");
+	printf("%s\n", arg);
+
 	return 0;
 };
 
@@ -61,6 +68,7 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Step into implementation of N instructions after the execution with a default value of 1 when N is not given.", cmd_si},
+	{ "info", "r: print the state of registers.\nw: print watch point position.", cmd_info},
 
 	/* TODO: Add more commands */
 
