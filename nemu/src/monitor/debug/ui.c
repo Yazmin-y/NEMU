@@ -75,22 +75,46 @@ static int cmd_info(char *args) {
 };
 
 static int cmd_x(char *args) {
-	int n;
-	swaddr_t startAddress;
-	int i;
-	bool suc;
-	char *arg = strtok(args, " ");
-	sscanf(arg, "%d", &n);
-	args = arg + strlen(arg) + 1;
-	startAddress = expr(args, &suc);
-	if (!suc) assert(1);
-	printf("0x%08x: ", startAddress);
-	for ( i = 1; i <= n; i++)
+	if (args == NULL)
 	{
-		printf("0x%08x ", swaddr_read(startAddress, 4));
-		startAddress += 4;
+		printf("Need more parameters.\n");
+		return 1;
 	}
-	printf("\n");
+	
+	char *arg = strtok(args, " ");
+	if (arg == NULL)
+	{
+		printf("Need more parameters.\n");
+		return 1;
+	}
+
+	int n = atoi(arg);
+	char *EXPR = strtok(NULL, " ");
+	if (EXPR == NULL)
+	{
+		printf("Need more parameters.\n");
+	}
+
+
+	char *str;
+	swaddr_t address = strtol(EXPR, &str, 16);
+
+	// Scan
+	int i;
+	int j;
+	for (i = 0; i < n; i++)
+	{
+		uint32_t data = swaddr_read(address+i*4, 4);
+		printf("0x%08x: ", address + i * 4);
+
+		for (j = 0; j < 4; j++)
+		{
+			printf("0x%02x ", data & 0xff);
+			data = data >> 8; /*4 bytes each time*/
+		}
+		printf("\n");
+	}
+	
 	return 0;
 	
 };
