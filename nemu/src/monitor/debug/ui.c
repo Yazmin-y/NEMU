@@ -67,11 +67,32 @@ static int cmd_info(char *args) {
 
 	if (strcmp(arg, "w") == 0)
 	{
-		printf("Will print the watch point.");
+		printf("Will print the watch point.\n");
 	}
 	
 	
 	return 0;
+};
+
+static int cmd_x(char *args) {
+	int n;
+	swaddr_t startAddress;
+	int i;
+	bool suc;
+	char *arg = strtok(args, " ");
+	sscanf(arg, "%d", &n);
+	args = arg + strlen(arg) + 1;
+	startAddress = expr(args, &suc);
+	if (!suc) assert(1);
+	printf("0x%08x: ", startAddress);
+	for ( i = 1; i <= n; i++)
+	{
+		printf("0x%08x ", swaddr_read(startAddress, 4));
+		startAddress += 4;
+	}
+	printf("\n");
+	return 0;
+	
 };
 
 static struct {
@@ -84,6 +105,7 @@ static struct {
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Step into implementation of N instructions after the execution with a default value of 1 when N is not given.", cmd_si},
 	{ "info", "r: print the state of registers.\nw: print watch point position.", cmd_info},
+	{ "x", "Caculate the result of the expression and print continuous N byte in hex started with the value.", cmd_x},
 
 	/* TODO: Add more commands */
 
