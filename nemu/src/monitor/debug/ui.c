@@ -54,8 +54,23 @@ static int cmd_si(char *args) {
 
 static int cmd_info(char *args) {
 	char *arg = strtok(args, " ");
-	printf("%s\n", arg);
+	// printf("%s\n", arg);
+	if (strcmp(arg, "r") == 0)
+	{
+		int i;
+		for ( i = R_EAX; i <= R_EDI; i++)
+		{
+			printf("%s\t0x%08x\n", regsl[i], reg_l(i));
+		}
+		
+	}
 
+	if (strcmp(arg, "w") == 0)
+	{
+		printf("Will print the watch point.");
+	}
+	
+	
 	return 0;
 };
 
