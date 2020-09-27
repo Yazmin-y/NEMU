@@ -119,6 +119,18 @@ static int cmd_x(char *args) {
 	
 };
 
+static int cmd_p(char *args) {
+	uint32_t num;
+	bool success;
+	num = expr(args, &success);
+	if (success)
+	{
+		printf("0x%x: \t%d\n", num, num);
+	}
+	else assert(0);
+	return 0;
+};
+
 static struct {
 	char *name;
 	char *description;
@@ -130,7 +142,7 @@ static struct {
 	{ "si", "Step into implementation of N instructions after the execution with a default value of 1 when N is not given.", cmd_si},
 	{ "info", "r: print the state of registers.\nw: print watch point position.", cmd_info},
 	{ "x", "Caculate the result of the expression and print continuous N byte in hex started with the value.", cmd_x},
-
+	{ "p", "Expression evaluation", cmd_p},
 	/* TODO: Add more commands */
 
 };
