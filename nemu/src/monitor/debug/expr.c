@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTOR, NUMBER, HNUMBER, REGISTER ,MARK
+	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER ,MARK
 
 	/* TODO: Add more token types */
 
@@ -175,7 +175,7 @@ int dominant_operator (int l,int r)
 uint32_t eval(int l,int r) {
 	if (l > r)
 	{
-		Assert (l>r,"something happened!\n");
+		Assert(0,"Bad expression!\n");
 		return 0;
 	}
 	if (l == r) {
@@ -224,18 +224,16 @@ uint32_t eval(int l,int r) {
 		return num;
 	}
 
-	else if (check_parentheses (l,r) == true)return eval (l + 1,r - 1);
+	else if (check_parentheses (l,r) == true) return eval (l + 1,r - 1);
  	else {
 		int op = dominant_operator (l,r);
-//		printf ("op = %d\n",op);
- 		if (l == op || tokens[op].type == POINTOR || tokens[op].type == MINUS || tokens[op].type == '!')
+ 		if (l == op || tokens[op].type == POINTER || tokens[op].type == MINUS || tokens[op].type == '!')
 		{
 			uint32_t val = eval (l + 1,r);
-//			printf ("val = %d\n",val);
 			switch (tokens[l].type)
  			{
-				case POINTOR:
-					return swaddr_read (val,4);
+				case POINTER:
+					return swaddr_read(val,4);
 				case MINUS:
 					return -val;
 				case '!':
@@ -274,7 +272,7 @@ uint32_t expr(char *e, bool *success) {
 	int i;
 	for (i = 0;i < nr_token; i ++) {
  		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != MARK && tokens[i - 1].type !=')'))) {
-			tokens[i].type = POINTOR;
+			tokens[i].type = POINTER;
 			tokens[i].priority = 6;
 		}
 		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != MARK && tokens[i - 1].type !=')'))) {
@@ -283,7 +281,7 @@ uint32_t expr(char *e, bool *success) {
  		}
   	}
 	/* TODO: Insert codes to evaluate the expression. */
-	panic("please implement me");
-	return 0;
+	*success = true;
+	return eval(0,nr_token-1);
 }
 
