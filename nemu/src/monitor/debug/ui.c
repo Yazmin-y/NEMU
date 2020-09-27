@@ -125,7 +125,7 @@ static int cmd_p(char *args) {
 	num = expr(args, &success);
 	if (success)
 	{
-		printf("0x%x: \t%d\n", num, num);
+		printf("0x%x\t%d\n", num, num);
 	}
 	else assert(0);
 	return 0;
