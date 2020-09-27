@@ -38,6 +38,87 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si(char *args) {
+	char* arg = strtok(args, " ");
+	int num;
+	if (arg==NULL) {
+		// printf("Need more arguments.\n");
+		num = 1;
+	} else {
+		num = atoi(arg);
+	}
+	cpu_exec(num);
+	// printf("Done.");
+	return 0;
+};
+
+static int cmd_info(char *args) {
+	char *arg = strtok(args, " ");
+	// printf("%s\n", arg);
+	if (strcmp(arg, "r") == 0)
+	{
+		int i;
+		for ( i = R_EAX; i <= R_EDI; i++)
+		{
+			printf("%s\t0x%08x\n", regsl[i], reg_l(i));
+		}
+		
+	}
+
+	if (strcmp(arg, "w") == 0)
+	{
+		printf("Will print the watch point.\n");
+	}
+	
+	
+	return 0;
+};
+
+static int cmd_x(char *args) {
+	if (args == NULL)
+	{
+		printf("Need more parameters.\n");
+		return 1;
+	}
+	
+	char *arg = strtok(args, " ");
+	if (arg == NULL)
+	{
+		printf("Need more parameters.\n");
+		return 1;
+	}
+
+	int n = atoi(arg);
+	char *EXPR = strtok(NULL, " ");
+	if (EXPR == NULL)
+	{
+		printf("Need more parameters.\n");
+	}
+
+
+	char *str;
+	swaddr_t address = strtol(EXPR, &str, 16);
+
+	// Scan
+	int i;
+	int j;
+	for (i = 0; i < n; i++)
+	{
+		uint32_t data = swaddr_read(address+i*4, 4);
+		printf("0x%08x: ", address + i * 4);
+
+		for (j = 0; j < 4; j++)
+		{
+			printf("0x%02x ", data & 0xff);
+			data = data >> 8; /*4 bytes each time*/
+		}
+		printf("\n");
+	}
+	
+	return 0;
+	
+};
+
 static struct {
 	char *name;
 	char *description;
@@ -46,6 +127,9 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
+	{ "si", "Step into implementation of N instructions after the execution with a default value of 1 when N is not given.", cmd_si},
+	{ "info", "r: print the state of registers.\nw: print watch point position.", cmd_info},
+	{ "x", "Caculate the result of the expression and print continuous N byte in hex started with the value.", cmd_x},
 
 	/* TODO: Add more commands */
 
