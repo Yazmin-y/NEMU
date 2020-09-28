@@ -67,7 +67,7 @@ static int cmd_info(char *args) {
 
 	if (strcmp(arg, "w") == 0)
 	{
-		printf("Will print the watch point.\n");
+		info_wp();
 	}
 	
 	
@@ -131,6 +131,30 @@ static int cmd_p(char *args) {
 	return 0;
 };
 
+static int cmd_w(char *args) {
+	WP *f;
+	bool suc;
+	f = new_wp();
+	printf("Watch-point %d: %s is set\n", f->NO, args);
+	f->value = expr(args, &suc);
+	strcpy(f->expr, args);
+	if (suc == false) Assert(1, "Evaluation failed!");
+	printf("Value: %d\n", f->value);
+	return 0;
+}
+
+static int cmd_d(char *args) {
+	char* arg = strtok(args, " ");
+	int num;
+	if (arg==NULL) {
+		printf("Need more arguments, please inset an integer to appoint the watch-point.\n");
+	} else {
+		num = atoi(arg);
+		delete_wp(num);
+	}
+	return 0;
+}
+
 static struct {
 	char *name;
 	char *description;
@@ -142,7 +166,9 @@ static struct {
 	{ "si", "Step into implementation of N instructions after the execution with a default value of 1 when N is not given.", cmd_si},
 	{ "info", "r: print the state of registers.\nw: print watch point position.", cmd_info},
 	{ "x", "Caculate the result of the expression and print continuous N byte in hex started with the value.", cmd_x},
-	{ "p", "Expression evaluation", cmd_p},
+	{ "p", "Expression evaluation.", cmd_p},
+	{ "w", "Set up a watch-point to detect if the value is changed.", cmd_w},
+	{ "d", "Delete a watch-point", cmd_d},
 	/* TODO: Add more commands */
 
 };

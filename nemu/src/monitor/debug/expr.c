@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER ,MARK
+	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER
 
 	/* TODO: Add more token types */
 
@@ -23,23 +23,22 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 
-	{"\\b[0-9]+\\b",NUMBER,0},				// number
-	{"\\b0[xX][0-9a-fA-F]+\\b",HNUMBER,0},		// 16 number
-	{"\\$[a-z,A-Z]+",REGISTER,0},				// register
-	{"[a-z,A-Z_0-9]+" , MARK , 0},		// mark
-	{"!=",NEQ,3},						// not equal	
-	{"!",'!',6},						// not
-	{"\\*",'*',5},						// mul
-	{"/",'/',5},						// div
+	{"[0-9]+",NUMBER,0},				// number
+	{"0[xX][0-9a-fA-F]+",HNUMBER,0},	// 16 number
+	{"\\$[a-z,A-Z]+",REGISTER,0},		// register
 	{"	+",NOTYPE,0},					// tabs
 	{" +",NOTYPE,0},					// spaces
-	{"\\+",'+',4},						// plus
-	{"-",'-',4},						// sub
-	{"==", EQ,3},						// equal
+	{"\\|\\|",OR,1},					// or
 	{"&&",AND,2},						// and
-	{"\\|\\|",OR,1},						// or
-	{"\\(",'(',7},                        // left bracket   
-	{"\\)",')',7},                        // right bracket 
+	{"!=",NEQ,3},						// not equal
+	{"==", EQ,3},						// equal
+	{"\\+",'+',4},						// plus
+	{"-",'-',4},						// sub	
+	{"\\*",'*',5},						// mul
+	{"/",'/',5},						// div
+	{"!",'!',6},						// not
+	{"\\(",'(',7},                      // left bracket   
+	{"\\)",')',7},                      // right bracket 
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -149,7 +148,7 @@ int dominant_operator (int l,int r)
 	int oper = l;
 	for (i = l; i <= r;i ++)
 	{
-		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER || tokens[i].type == MARK)
+		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER)
 			continue;
 		int cnt = 0;
 		bool key = true;
@@ -271,11 +270,11 @@ uint32_t expr(char *e, bool *success) {
 	}
 	int i;
 	for (i = 0;i < nr_token; i ++) {
- 		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != MARK && tokens[i - 1].type !=')'))) {
+ 		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
 			tokens[i].type = POINTER;
 			tokens[i].priority = 6;
 		}
-		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != MARK && tokens[i - 1].type !=')'))) {
+		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
 			tokens[i].type = MINUS;
 			tokens[i].priority = 6;
  		}
