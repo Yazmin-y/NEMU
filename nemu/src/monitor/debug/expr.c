@@ -23,8 +23,8 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 
-	{"[0-9]+",NUMBER,0},				// number
-	{"0[xX][0-9,a-f,A-F]+",HNUMBER,0},		// 16 number
+	{"\\b[0-9]+\\b",NUMBER,0},				// number
+	{"\\b0[xX][0-9a-fA-F]+\\b",HNUMBER,0},		// 16 number
 	{"\\$[a-z,A-Z]+",REGISTER,0},				// register
 	{"[a-z,A-Z_0-9]+" , MARK , 0},		// mark
 	{"!=",NEQ,3},						// not equal	
@@ -85,7 +85,7 @@ static bool make_token(char *e) {
 			if(regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
-				char *tmp = position + e + 1;
+				char *tmp = e + position + 1;
 				Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				position += substr_len;
 
