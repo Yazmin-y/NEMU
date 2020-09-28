@@ -67,6 +67,7 @@ void free_wp(WP *wp) {
 		printf("watch point pool is empty!\n");
 		assert(0);
 	} 
+	
 	if (head->NO == wp->NO)
 	{
 		head = head->next;
