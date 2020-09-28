@@ -57,7 +57,7 @@ void free_wp(WP *wp) {
 			p = p->next;
 		}
 		p->next = wp;
-		printf("watch-point%d is released.\n", wp->NO);
+		printf("watch-point %d is released.\n", wp->NO);
 		
 	}
 
@@ -133,6 +133,11 @@ void delete_wp(int num) {
 void info_wp() {
 	WP *f;
 	f = head;
+	if (f == NULL)
+	{
+		printf("There is no watch-point.");
+	}
+	
 	while (f != NULL)
 	{
 		printf("Watch-point %d: %s = %d\n", f->NO, f->expr, f->value);
