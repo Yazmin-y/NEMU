@@ -57,7 +57,7 @@ void free_wp(WP *wp) {
 			p = p->next;
 		}
 		p->next = wp;
-		printf("watch-point%d move to the free pool success.\n", wp->NO);
+		printf("watch-point%d is released.\n", wp->NO);
 		
 	}
 
@@ -84,7 +84,7 @@ void free_wp(WP *wp) {
 		else if (f->next->NO == wp->NO)
 		{
 			f->next = f->next->next;
-			printf("watch-point%d is released.\n", wp->NO);
+			
 		}
 		else assert(0);
 	}
