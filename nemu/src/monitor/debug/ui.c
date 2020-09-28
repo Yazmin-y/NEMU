@@ -62,6 +62,15 @@ static int cmd_info(char *args) {
 		{
 			printf("%s\t0x%08x\n", regsl[i], reg_l(i));
 		}
+		for ( i = R_AX; i <= R_DI; i++)
+		{
+			printf("%s\t0x%08x\n", regsw[i], reg_w(i));
+		}
+		for ( i = R_AL; i <= R_BH; i++)
+		{
+			printf("%s\t0x%08x\n", regsb[i], reg_b(i));
+		}
+		
 		
 	}
 
