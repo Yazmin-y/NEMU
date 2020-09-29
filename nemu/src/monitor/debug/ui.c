@@ -42,7 +42,7 @@ static int cmd_si(char *args) {
 	char* arg = strtok(args, " ");
 	int num;
 	if (arg==NULL) {
-		// printf("Need more arguments.\n");
+		 printf("Need more arguments.\n");
 		num = 1;
 	} else {
 		num = atoi(arg);

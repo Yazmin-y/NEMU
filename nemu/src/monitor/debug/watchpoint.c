@@ -136,7 +136,7 @@ void info_wp() {
 	f = head;
 	if (f == NULL)
 	{
-		printf("There is no watch-point.");
+		printf("There is no watch-point.\n");
 	}
 	
 	while (f != NULL)
