@@ -7,11 +7,7 @@
 #include <regex.h>
 
 enum {
-<<<<<<< HEAD
-	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER ,MARK
-=======
 	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER
->>>>>>> PA1
 
 	/* TODO: Add more token types */
 
@@ -27,11 +23,9 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 
-<<<<<<< HEAD
 	{"\\b[0-9]+\\b",NUMBER,0},				// number
 	{"\\b0[xX][0-9a-fA-F]+\\b",HNUMBER,0},		// 16 number
 	{"\\$[a-zA-Z]+",REGISTER,0},				// register
-	{"\\b[a-zA-Z_0-9]+" , MARK , 0},		// mark
 	{"!=",NEQ,3},						// not equal	
 	{"!",'!',6},						// not
 	{"\\*",'*',5},						// mul
@@ -45,7 +39,6 @@ static struct rule {
 	{"\\|\\|",OR,1},						// or
 	{"\\(",'(',7},                        // left bracket   
 	{"\\)",')',7},                        // right bracket 
-=======
 	{"[0-9]+",NUMBER,0},				// number
 	{"0[xX][0-9a-fA-F]+",HNUMBER,0},	// 16 number
 	{"\\$[a-z,A-Z]+",REGISTER,0},		// register
@@ -62,7 +55,6 @@ static struct rule {
 	{"!",'!',6},						// not
 	{"\\(",'(',7},                      // left bracket   
 	{"\\)",')',7},                      // right bracket 
->>>>>>> PA1
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -108,11 +100,7 @@ static bool make_token(char *e) {
 			if(regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
-<<<<<<< HEAD
-				char *tmp = position + e + 1;
-=======
 				char *tmp = e + position + 1;
->>>>>>> PA1
 				Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				
 
@@ -176,11 +164,7 @@ int dominant_operator (int l,int r)
 	int oper = l;
 	for (i = l; i <= r;i ++)
 	{
-<<<<<<< HEAD
-		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER || tokens[i].type == MARK)
-=======
 		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER)
->>>>>>> PA1
 			continue;
 		int cnt = 0;
 		bool key = true;
@@ -302,19 +286,11 @@ uint32_t expr(char *e, bool *success) {
 	}
 	int i;
 	for (i = 0;i < nr_token; i ++) {
-<<<<<<< HEAD
- 		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != MARK && tokens[i - 1].type !=')'))) {
-			tokens[i].type = POINTER;
-			tokens[i].priority = 6;
-		}
-		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != MARK && tokens[i - 1].type !=')'))) {
-=======
  		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
 			tokens[i].type = POINTER;
 			tokens[i].priority = 6;
 		}
 		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
->>>>>>> PA1
 			tokens[i].type = MINUS;
 			tokens[i].priority = 6;
  		}
