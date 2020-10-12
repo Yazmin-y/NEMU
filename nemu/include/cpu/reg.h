@@ -46,8 +46,9 @@ typedef struct {
 					uint32_t SF: 1;
 					uint32_t TF: 1;
 					uint32_t IF: 1;
+					uint32_t DF: 1;
 					uint32_t OF: 1;
-					uint32_t IOPL: 1;
+					uint32_t IOPL: 2;
 					uint32_t NT: 1;
 					uint32_t : 1;
 					uint32_t RF: 1;
