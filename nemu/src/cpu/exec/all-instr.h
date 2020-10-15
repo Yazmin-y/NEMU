@@ -39,4 +39,5 @@
 #include "control-trans/je.h"
 #include "control-trans/ret.h"
 #include "control-trans/jmp.h"
+#include "control-trans/jcc.h"
 
