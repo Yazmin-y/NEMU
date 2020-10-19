@@ -5,7 +5,7 @@
 static void do_execute() {
     if (ops_decoded.is_operand_size_16)
     {
-        swaddr_write(reg_w(R_DI), 2, swaddr_read(reg_w(R_SI), 4));
+        swaddr_write(reg_w(R_DI), 2, swaddr_read(reg_w(R_SI), 2));
 
         if (cpu.DF == 0)
         {
