@@ -5,7 +5,7 @@
 static void do_execute() {
     if (ops_decoded.is_operand_size_16)
     {
-        swaddr_write(reg_w(R_DI), 2, swaddr_read(reg_w(R_SI), 2));
+        swaddr_write(reg_w(R_DI), DATA_BYTE, swaddr_read(reg_w(R_SI), DATA_BYTE));
 
         if (cpu.DF == 0)
         {
@@ -20,7 +20,7 @@ static void do_execute() {
     }
     else
     {
-        swaddr_write(reg_l(R_EDI), 4, swaddr_read(reg_l(R_ESI), 4));
+        swaddr_write(reg_l(R_EDI), DATA_BYTE, swaddr_read(reg_l(R_ESI), DATA_BYTE));
 
         if (cpu.DF == 0)
         {
