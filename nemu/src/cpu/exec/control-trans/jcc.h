@@ -6,4 +6,4 @@
 #include "jg.h"
 #include "jle.h"
 #include "js.h"
-#include "jne.h"
+#include "jnp.h"
