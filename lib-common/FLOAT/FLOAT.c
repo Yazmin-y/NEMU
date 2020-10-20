@@ -23,7 +23,6 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * It is OK not to use the template above, but you should figure
 	 * out another way to perform the division.
 	 */
-	nemu_assert(0);
 	int sign = 1;
 	if (a < 0)
 	{
@@ -63,7 +62,7 @@ FLOAT f2F(float a) {
 	 * stack. How do you retrieve it to another variable without
 	 * performing arithmetic operations on it directly?
 	 */
-
+	nemu_assert(0);
 	int b = *(int *)&a;
 	int sign = b & 0x80000000;
 	int exp = (b >> 23) & 0xff;
