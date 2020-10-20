@@ -1,8 +1,8 @@
 #include "FLOAT.h"
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-	long long c = (long long)a * (long long)b; 
-	return (FLOAT)(c >> 16);
+	long long c = 1ll * a * b; 
+	return c >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
@@ -45,7 +45,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 		if (a >= b)
 		{
 			a -= b;
-			result ++;
+			++result;
 		}
 		
 	}
@@ -65,23 +65,21 @@ FLOAT f2F(float a) {
 	 */
 
 	int b = *(int *)&a;
-	int sign = b >> 31;
+	int sign = b & 0x80000000;
 	int exp = (b >> 23) & 0xff;
-	FLOAT k = b&0x7fffff;
-	if (exp != 0) k += 1 << 23;
-	exp -= 150;
-	if (exp < -16) k >>= -16-exp;
-	if (exp > -16) k <<= exp+16;
-	return sign == 0 ? k : -k;
-	
-	return 0;
+	int k = b&0x7fffff;
+	if (exp == 255) return sign ? -0x7fffffff : 0x7fffffff;
+	if (exp == 0) return 0;
+	k |= 1 << 23;
+	exp -= 134;
+	if (exp < 0) k >>= -exp;
+	if (exp > 0) k <<= exp;
+	return sign ? -k : k;
 }
 
 FLOAT Fabs(FLOAT a) {
-	FLOAT b;
-	if (a < 0) b = -a;
-	else b = a;
-	return b;
+	
+	return a < 0 ? -a : a;
 }
 
 /* Functions below are already implemented */
