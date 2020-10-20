@@ -62,17 +62,15 @@ FLOAT f2F(float a) {
 	 * stack. How do you retrieve it to another variable without
 	 * performing arithmetic operations on it directly?
 	 */
-	nemu_assert(0);
+	
 	int b = *(int *)&a;
-	int sign = b & 0x80000000;
+	int sign = b >> 31;
 	int exp = (b >> 23) & 0xff;
-	int k = b&0x7fffff;
-	if (exp == 255) return sign ? -0x7fffffff : 0x7fffffff;
-	if (exp == 0) return 0;
-	k |= 1 << 23;
-	exp -= 134;
-	if (exp < 0) k >>= -exp;
-	if (exp > 0) k <<= exp;
+	FLOAT k = b & 0x7fffff;
+	if (exp != 0) k += 1<< 23;
+	exp -= 150;
+	if (exp < -16) k >>= -16-exp;
+	if (exp > -16) k <<= 16+exp;
 	return sign ? -k : k;
 }
 
