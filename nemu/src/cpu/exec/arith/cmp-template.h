@@ -11,7 +11,7 @@ static void do_execute() {
     s1 = op_dest->val >> len;
     s2 = op_src->val >> len;
     cpu.OF = (s1!=s2 && s2==cpu.SF);
-    cpu.ZF = ! result;
+    cpu.ZF = !result;
     result ^= result >> 4;
     result ^= result >> 2;
     result ^= result >> 1;
