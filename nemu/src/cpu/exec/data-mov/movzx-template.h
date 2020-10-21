@@ -1,6 +1,6 @@
 #include "cpu/exec/template-start.h"
 
-#define instr movsx
+#define instr movzx
 
 static void do_movzx_b() {
     DATA_TYPE result;
