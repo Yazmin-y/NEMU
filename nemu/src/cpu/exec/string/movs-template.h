@@ -2,43 +2,12 @@
 
 #define instr movs
 
-static void do_execute() {
-    if (ops_decoded.is_operand_size_16)
-    {
-        swaddr_write(reg_w(R_DI), DATA_BYTE, swaddr_read(reg_w(R_SI), DATA_BYTE));
-
-        if (cpu.DF == 0)
-        {
-            reg_w(R_DI) += DATA_BYTE;
-            reg_w(R_SI) += DATA_BYTE;
-        }
-        else
-        {
-            reg_w(R_DI) -= DATA_BYTE;
-            reg_w(R_SI) -= DATA_BYTE;
-        }
-    }
-    else
-    {
-        swaddr_write(reg_l(R_EDI), DATA_BYTE, swaddr_read(reg_l(R_ESI), DATA_BYTE));
-
-        if (cpu.DF == 0)
-        {
-            reg_l(R_EDI) += DATA_BYTE;
-            reg_l(R_ESI) += DATA_BYTE;
-        }
-        else
-        {
-            reg_l(R_EDI) -= DATA_BYTE;
-            reg_l(R_ESI) -= DATA_BYTE;
-        }
-        
-        
-    }
-    
+make_helper(concat(movs_n_, SUFFIX)) {
+    swaddr_write(reg_l(R_EDI), DATA_BYTE, swaddr_read(reg_l(R_ESI), DATA_BYTE));
+    if (cpu.DF == 0) reg_l(R_EDI) += DATA_BYTE, reg_l(R_ESI) += DATA_BYTE;
+    else reg_l(R_EDI) -= DATA_BYTE, reg_l(R_ESI) -=DATA_BYTE;
     print_asm("movs");
+    return 1;
 }
-
-make_instr_helper(n);
 
 #include "cpu/exec/template-end.h"
