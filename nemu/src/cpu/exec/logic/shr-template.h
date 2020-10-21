@@ -10,7 +10,7 @@ static void do_execute () {
 	dest >>= count;
 	OPERAND_W(op_dest, dest);
 
-	concat(update_, SUFFIX) (dest);
+	/* concat(update_, SUFFIX) (dest); */
 
 	print_asm_template2();
 }
