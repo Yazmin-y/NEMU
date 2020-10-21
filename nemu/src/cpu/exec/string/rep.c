@@ -25,11 +25,7 @@ make_helper(rep) {
 				|| ops_decoded.opcode == 0xaf	// scasw
 				); 
 			
-			if ((ops_decoded.opcode == 0xa4	// movsb
-				|| ops_decoded.opcode == 0xa5	// movsw
-				|| ops_decoded.opcode == 0xaa	// stosb
-				|| ops_decoded.opcode == 0xab	// stosw
-				|| ops_decoded.opcode == 0xa6
+			if ((ops_decoded.opcode == 0xa6
 				|| ops_decoded.opcode == 0xa7
 				|| ops_decoded.opcode == 0xae
 				|| ops_decoded.opcode == 0xaf) 
