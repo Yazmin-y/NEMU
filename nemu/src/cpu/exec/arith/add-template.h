@@ -3,19 +3,11 @@
 
 static void do_execute() {
     DATA_TYPE result = op_dest->val + op_src->val;
-    int len = (DATA_BYTE << 3) - 1;
-    int s1, s2;
-    cpu.CF = (result < op_dest->val);
-    cpu.SF = result >> len;
-    s1 = op_dest->val >> len;
-    s2 = op_src->val >> len;
-    cpu.OF = (s1==s2 && s1!=cpu.SF);
-    cpu.ZF = !result;
     OPERAND_W(op_dest, result);
-    result ^= result >> 4;
-    result ^= result >> 2;
-    result ^= result >> 1;
-    cpu.PF = !(result&1);
+    concat(update_, SUFFIX)(result);
+    int len = (DATA_BYTE << 3) - 1;
+    cpu.CF = (result < op_dest->val);
+    cpu.OF = ((op_dest->val >> len) == (op_src->val >> len) && (op_dest->val >> len) != cpu .SF);
     print_asm_no_template2();
 }
 
