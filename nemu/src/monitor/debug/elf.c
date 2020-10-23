@@ -1,12 +1,41 @@
-#include "nemu.h"
+#include "common.h"
 #include <stdlib.h>
-// #include <elf.h>
+#include <elf.h>
+
+#define max_str_len 32
 
 char *exec_file = NULL;
 
-char *strtab = NULL;
-Elf32_Sym *symtab = NULL;
-int nr_symtab_entry;
+static char *strtab = NULL;
+static Elf32_Sym *symtab = NULL;
+static int nr_symtab_entry;
+
+uint32_t get_addr_from_mark(char *mark) {
+	int i;
+	uint32_t num;
+	for (i = 0; i < nr_symtab_entry; i++)
+	{
+		if ((symtab[i].st_info&0xf) == STT_OBJECT)
+		{
+			char tmp[max_str_len];
+			int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+			strncpy(tmp, strtab+symtab[i].st_name, tmplen);
+			tmp[tmplen] = '\0';
+			if (strcmp(tmp, mark) == 0)
+			{
+				num = symtab[i].st_value;
+				return num;
+			}
+					
+		} else {
+			continue;
+		}
+			
+	}
+	printf("no matching mark!\n");
+	num = 0;
+	return num;
+}
 
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;

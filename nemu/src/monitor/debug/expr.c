@@ -91,6 +91,8 @@ typedef struct token {
 Token tokens[32];
 int nr_token;
 
+uint32_t get_addr_from_mark(char *mark);
+
 static bool make_token(char *e) {
 	int position = 0;
 	int i;
@@ -242,24 +244,7 @@ uint32_t eval(int l,int r) {
 
 		if (tokens[1].type == MARK)
 		{
-			int i;
-			for (i = 0; i < nr_symtab_entry; i++)
-			{
-				if ((symtab[i].st_info&0xf) == STT_OBJECT)
-				{
-					char tmp[max_str_len];
-					int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
-					strncpy(tmp, strtab+symtab[i].st_name, tmplen);
-					tmp[tmplen] = '\0';
-					if (strcmp(tmp, tokens[1].str) == 0)
-					{
-						num = symtab[i].st_value;
-					}
-					
-				}
-				
-			}
-			
+			num = get_addr_from_mark(tokens[1].str);
 		}
 		
 	
