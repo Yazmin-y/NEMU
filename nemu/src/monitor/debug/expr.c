@@ -170,7 +170,7 @@ int dominant_operator (int l,int r)
 	int oper = l;
 	for (i = l; i <= r;i ++)
 	{
-		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER)
+		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER || tokens[i].type == MARK)
 			continue;
 		int cnt = 0;
 		bool key = true;
@@ -242,10 +242,10 @@ uint32_t eval(int l,int r) {
 			}
 		}
 
-		if (tokens[1].type == MARK)
-		{
-			num = get_addr_from_mark(tokens[1].str);
-		}
+	if (tokens[1].type == MARK)
+	{
+		num = get_addr_from_mark(tokens[1].str);
+	}
 		
 	
 		return num;
