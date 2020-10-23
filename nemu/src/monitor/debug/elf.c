@@ -12,7 +12,7 @@ static int nr_symtab_entry;
 
 uint32_t get_addr_from_mark(char *mark) {
 	int i;
-	uint32_t num;
+	uint32_t num = 0;
 	for (i = 0; i < nr_symtab_entry; i++)
 	{
 		if ((symtab[i].st_info&0xf) == STT_OBJECT)
@@ -24,16 +24,10 @@ uint32_t get_addr_from_mark(char *mark) {
 			if (strcmp(tmp, mark) == 0)
 			{
 				num = symtab[i].st_value;
-				return num;
-			}
-					
-		} else {
-			continue;
+			}	
 		}
-			
 	}
-	printf("no matching mark!\n");
-	num = 0;
+
 	return num;
 }
 
