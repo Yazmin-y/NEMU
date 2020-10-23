@@ -23,7 +23,8 @@ uint32_t get_addr_from_mark(char *mark) {
 			
 			if (strcmp(tmp, mark) == 0)
 			{
-				return symtab[i].st_value;
+				num = symtab[i].st_value;
+				return num;
 			}	
 		}
 	}
