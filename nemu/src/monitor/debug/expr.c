@@ -149,15 +149,17 @@ static bool make_token(char *e) {
 bool check_parentheses (int l,int r)
 {
 	int i;
-	if(l>r) return false;
-	int lc = 0, rc = 0;
-	for (i = 1; i <= r; i ++)
+	if (tokens[l].type == '(' && tokens[r].type ==')')
 	{
-		if (tokens[i].type == '(')lc ++;
-		if (tokens[i].type == ')')rc ++;
-		if (rc > lc)return false;	
+		int lc = 0, rc = 0;
+		for (i = l + 1; i < r; i ++)
+		{
+			if (tokens[i].type == '(')lc ++;
+			if (tokens[i].type == ')')rc ++;
+			if (rc > lc)return false;	
+		}
+		if (lc == rc)return true;
 	}
-	if (lc == rc)return true;
 	return false;
 }
 
