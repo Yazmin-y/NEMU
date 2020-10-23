@@ -10,27 +10,7 @@ static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
-uint32_t get_addr_from_mark(char *mark) {
-	int i;
-	uint32_t num = 0;
-	for (i = 0; i < nr_symtab_entry; i++)
-	{
-		if ((symtab[i].st_info&0xf) == STT_OBJECT)
-		{
-			char tmp[max_str_len];
-			// int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
-			strcpy(tmp, strtab+symtab[i].st_name);
-			
-			if (strcmp(tmp, mark) == 0)
-			{
-				num = symtab[i].st_value;
-				return num;
-			}	
-		}
-	}
-	printf("no matching mark!\n");
-	return num;
-}
+
 
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
@@ -105,3 +85,24 @@ void load_elf_tables(int argc, char *argv[]) {
 	fclose(fp);
 }
 
+uint32_t get_addr_from_mark(char *mark) {
+	int i;
+	uint32_t num = 0;
+	for (i = 0; i < nr_symtab_entry; i++)
+	{
+		if ((symtab[i].st_info&0xf) == STT_OBJECT)
+		{
+			char tmp[max_str_len];
+			// int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+			strcpy(tmp, strtab+symtab[i].st_name);
+			
+			if (strcmp(tmp, mark) == 0)
+			{
+				num = symtab[i].st_value;
+				return num;
+			}	
+		}
+	}
+	printf("no matching mark!\n");
+	return num;
+}
