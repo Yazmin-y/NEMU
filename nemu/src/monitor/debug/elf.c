@@ -18,9 +18,9 @@ uint32_t get_addr_from_mark(char *mark) {
 		if ((symtab[i].st_info&0xf) == STT_OBJECT)
 		{
 			char tmp[max_str_len];
-			int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
-			strncpy(tmp, strtab+symtab[i].st_name, tmplen);
-			tmp[tmplen] = '\0';
+			// int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+			strcpy(tmp, strtab+symtab[i].st_name);
+			
 			if (strcmp(tmp, mark) == 0)
 			{
 				num = symtab[i].st_value;
