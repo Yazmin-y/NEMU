@@ -5,9 +5,12 @@
  */
 #include <sys/types.h>
 #include <regex.h>
+// #include <elf.h>
+
+#define max_str_len 32
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER
+	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER, MARK
 
 	/* TODO: Add more token types */
 
@@ -26,6 +29,7 @@ static struct rule {
 	{"\\b[0-9]+\\b",NUMBER,0},				// number
 	{"\\b0[xX][0-9a-fA-F]+\\b",HNUMBER,0},		// 16 number
 	{"\\$[a-zA-Z]+",REGISTER,0},				// register
+	{"\\b[a-zA-Z_0-9]+", MARK, 0},		// mark
 	{"!=",NEQ,3},						// not equal	
 	{"!",'!',6},						// not
 	{"\\*",'*',5},						// mul
@@ -235,6 +239,29 @@ uint32_t eval(int l,int r) {
 			else assert (1);
 			}
 		}
+
+		if (tokens[1].type == MARK)
+		{
+			int i;
+			for (i = 0; i < nr_symtab_entry; i++)
+			{
+				if ((symtab[i].st_info&0xf) == STT_OBJECT)
+				{
+					char tmp[max_str_len];
+					int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+					strncpy(tmp, strtab+symtab[i].st_name, tmplen);
+					tmp[tmplen] = '\0';
+					if (strcmp(tmp, tokens[1].str) == 0)
+					{
+						num = symtab[i].st_value;
+					}
+					
+				}
+				
+			}
+			
+		}
+		
 	
 		return num;
 	}
@@ -286,11 +313,11 @@ uint32_t expr(char *e, bool *success) {
 	}
 	int i;
 	for (i = 0;i < nr_token; i ++) {
- 		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
+ 		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')' && tokens[i - 1].type != MARK))) {
 			tokens[i].type = POINTER;
 			tokens[i].priority = 6;
 		}
-		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
+		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')' && tokens[i - 1].type != MARK))) {
 			tokens[i].type = MINUS;
 			tokens[i].priority = 6;
  		}

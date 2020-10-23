@@ -1,12 +1,12 @@
-#include "common.h"
+#include "nemu.h"
 #include <stdlib.h>
-#include <elf.h>
+// #include <elf.h>
 
 char *exec_file = NULL;
 
-static char *strtab = NULL;
-static Elf32_Sym *symtab = NULL;
-static int nr_symtab_entry;
+char *strtab = NULL;
+Elf32_Sym *symtab = NULL;
+int nr_symtab_entry;
 
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
