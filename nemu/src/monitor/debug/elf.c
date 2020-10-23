@@ -23,11 +23,11 @@ uint32_t get_addr_from_mark(char *mark) {
 			
 			if (strcmp(tmp, mark) == 0)
 			{
-				num = symtab[i].st_value;
+				return symtab[i].st_value;
 			}	
 		}
 	}
-
+	printf("no matching mark!\n");
 	return num;
 }
 
