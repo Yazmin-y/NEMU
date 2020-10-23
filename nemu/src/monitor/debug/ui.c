@@ -125,7 +125,7 @@ static int cmd_p(char *args) {
 	num = expr(args, &success);
 	if (success)
 	{
-		printf("Expression %s:\t0x%x\n", args, num);
+		printf("Expression %s:\t0x%x\t%d\n", args, num, num);
 	}
 	else assert(0);
 	return 0;
