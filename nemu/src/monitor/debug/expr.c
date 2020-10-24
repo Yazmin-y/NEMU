@@ -193,6 +193,7 @@ int dominant_operator (int l,int r)
  	}
 	return oper;
 }
+
 uint32_t eval(int l,int r) {
 	if (l > r)
 	{
@@ -200,53 +201,56 @@ uint32_t eval(int l,int r) {
 		return 0;
 	}
 	if (l == r) {
-	uint32_t num = 0;
-	if (tokens[l].type == NUMBER)
-		sscanf(tokens[l].str,"%d",&num);
-	if (tokens[l].type == HNUMBER)
-		sscanf(tokens[l].str,"%x",&num);
-	if (tokens[l].type == REGISTER)
+		uint32_t num = 0;
+		if (tokens[l].type == NUMBER)
+			sscanf(tokens[l].str,"%d",&num);
+		if (tokens[l].type == HNUMBER)
+			sscanf(tokens[l].str,"%x",&num);
+		if (tokens[l].type == REGISTER)
 		{
-			if (strlen (tokens[l].str) == 3) {
-			int i;
-			for (i = R_EAX; i <= R_EDI; i ++) {
-				if (strcmp (tokens[l].str,regsl[i]) == 0) break;
-			}
-			if (i > R_EDI) 
+			if (strlen (tokens[l].str) == 3) 
 			{
-				if (strcmp (tokens[l].str,"eip") == 0) num = cpu.eip;
-				else Assert(1,"no this register!\n");
-			}
-			else num = reg_l(i);
+				int i;
+				for (i = R_EAX; i <= R_EDI; i ++) {
+					if (strcmp (tokens[l].str,regsl[i]) == 0) break;
+				}
+				if (i > R_EDI) 
+				{
+					if (strcmp (tokens[l].str,"eip") == 0) num = cpu.eip;
+					else Assert(1,"no this register!\n");
+				}
+				else num = reg_l(i);
  			}
- 			else if (strlen (tokens[l].str) == 2) {
- 			if (tokens[l].str[1] == 'x' || tokens[l].str[1] == 'p' || tokens[l].str[1] == 'i') 
+
+ 			else if (strlen (tokens[l].str) == 2) 
 			{
-				int i;
-				for (i = R_AX; i <= R_DI; i ++) 
+ 				if (tokens[l].str[1] == 'x' || tokens[l].str[1] == 'p' || tokens[l].str[1] == 'i') 
 				{
-					if (strcmp (tokens[l].str,regsw[i]) == 0) break;
+					int i;
+					for (i = R_AX; i <= R_DI; i ++) 
+					{
+						if (strcmp (tokens[l].str,regsw[i]) == 0) break;
+					}
+					num = reg_w(i);
 				}
-				num = reg_w(i);
-			}
- 			else if (tokens[l].str[1] == 'l' || tokens[l].str[1] == 'h') 
-			{
-				int i;
-				for (i = R_AL; i <= R_BH; i ++)
+ 				else if (tokens[l].str[1] == 'l' || tokens[l].str[1] == 'h') 
 				{
-					if (strcmp (tokens[l].str,regsb[i]) == 0)break;
+					int i;
+					for (i = R_AL; i <= R_BH; i ++)
+					{
+						if (strcmp (tokens[l].str,regsb[i]) == 0)break;
+					}
+					num = reg_b(i);
 				}
-				num = reg_b(i);
-			}
-			else assert (1);
+				else assert (1);
 			}
 		}
 
-	if (tokens[1].type == MARK)
-	{
-		num = get_addr_from_mark(tokens[1].str);
-		printf("%s", tokens[1].str);
-	}
+		if (tokens[l].type == MARK)
+		{
+			num = get_addr_from_mark(tokens[1].str);
+			printf("%s", tokens[1].str);
+		}
 		
 	
 		return num;
