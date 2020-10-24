@@ -38,7 +38,7 @@ uint32_t loader() {
 
 	/* Load each program segment */
 	// panic("please implement me");
-	int i;
+	int i = 0;
 	ph = (void*)(buf + elf->e_phoff); // goto header table
 	for(; i < elf->e_phnum; i++, ph++ ) {
 		/* Scan the program header table, load each segment into memory */
