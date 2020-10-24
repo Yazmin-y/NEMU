@@ -106,3 +106,22 @@ uint32_t get_addr_from_mark(char *mark) {
 	printf("no matching mark!\n");
 	return num;
 }
+
+void get_func_from_addr(char *tmp, swaddr_t addr) {
+	int i;
+	for (i = 0; i < nr_symtab_entry; i++)
+	{
+		if (symtab[i].st_value <= addr 
+		&& symtab[i].st_value + symtab[i].st_size >= addr
+		&& (symtab[i].st_info&0xf) == STT_FUNC)
+		{
+			// tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+			strcpy(tmp, strtab+symtab[i].st_name);
+			return;
+		}
+		
+	}
+	printf("No matching function!\n");
+	// tmp[0] = '/0';
+	return;
+}

@@ -9,6 +9,14 @@
 
 void cpu_exec(uint32_t);
 
+typedef struct {
+	swaddr_t prev_ebp;
+	swaddr_t ret_addr;
+	uint32_t args[4];
+} PartOfStackFrame;
+
+void get_func_from_addr(char *tmp, swaddr_t addr);
+
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
 	static char *line_read = NULL;
@@ -155,6 +163,42 @@ static int cmd_d(char *args) {
 	return 0;
 }
 
+static void read_ebp(swaddr_t addr, PartOfStackFrame *ebp) {
+	ebp->prev_ebp = swaddr_read(addr, 4);
+	ebp->ret_addr = swaddr_read(addr+4, 4);
+	int i;
+	for ( i = 0; i < 4; i++)
+	{
+		ebp->args[i] = swaddr_read(addr+8+4*i, 4);
+	}
+	
+}
+
+static int cmd_bt(char *args) {
+	int j = 0;
+	PartOfStackFrame current_ebp;
+	char tmp[32];
+	
+	swaddr_t addr = reg_l(R_EBP);
+	current_ebp.ret_addr = cpu.eip;
+	while (addr > 0)
+	{
+		printf("#%d 0x%08x in\t", j++, current_ebp.ret_addr);
+		
+		get_func_from_addr(tmp, current_ebp.ret_addr);
+
+		printf("%s\t", tmp);
+		read_ebp(addr, &current_ebp);
+		if (strcmp(tmp, "main") == 0) printf("( )\n");
+		else {
+			printf("( %d, %d, %d, %d )\n", current_ebp.args[0], current_ebp.args[1], current_ebp.args[2], current_ebp.args[3]);
+		}
+		addr = current_ebp.prev_ebp;
+	}
+	return 0;
+	
+}
+
 static struct {
 	char *name;
 	char *description;
@@ -170,6 +214,7 @@ static struct {
 	{ "p", "Expression evaluation.", cmd_p},
 	{ "w", "Set up a watch-point to detect if the value is changed.", cmd_w},
 	{ "d", "Delete a watch-point", cmd_d},
+	{ "bt", "Print stack frame chain.", cmd_bt},
 	/* TODO: Add more commands */
 
 };
