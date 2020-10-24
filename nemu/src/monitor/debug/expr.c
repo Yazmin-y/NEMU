@@ -245,6 +245,7 @@ uint32_t eval(int l,int r) {
 	if (tokens[1].type == MARK)
 	{
 		num = get_addr_from_mark(tokens[1].str);
+		printf("%s", tokens[1].str);
 	}
 		
 	
