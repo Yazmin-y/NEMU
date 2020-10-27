@@ -20,7 +20,7 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	char buf[80];
 	int sign = f & 0x80000000;
 	int len, dc = 0;
-	if (sign) f = (~f) + 1;
+	if(sign) f = (~f) + 1;
 	int tmp = 500000000, i = 15;
 	for (i = 15; i>=0; i--)
 	{
@@ -32,7 +32,7 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	{
 		len = (sprintf) (buf, "-%d.%06d", ((int)(f) >> 16), dc);
 	} else {
-		len = (sprintf) (buf, "5d.%06d", ((int)(f) >> 16), dc);
+		len = (sprintf) (buf, "%d.%06d", ((int)(f) >> 16), dc);
 	}
 	
 	return __stdio_fwrite(buf, len, stream);
