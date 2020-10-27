@@ -33,10 +33,38 @@ typedef struct {
 			uint32_t ebp;
 			uint32_t esi;
 			uint32_t edi;
+			swaddr_t eip;
+			union {
+				struct {
+					uint32_t CF: 1;
+					uint32_t : 1;
+					uint32_t PF: 1;
+					uint32_t : 1;
+					uint32_t AF: 1;
+					uint32_t : 1;
+					uint32_t ZF: 1;
+					uint32_t SF: 1;
+					uint32_t TF: 1;
+					uint32_t IF: 1;
+					uint32_t DF: 1;
+					uint32_t OF: 1;
+					uint32_t IOPL: 2;
+					uint32_t NT: 1;
+					uint32_t : 1;
+					uint32_t RF: 1;
+					uint32_t VM: 1;
+					uint32_t : 14;
+				};
+				uint32_t eflags;
+			};
 		};
+		bool INTR;
 	};
 
-	swaddr_t eip;
+	
+
+	
+	
 
 } CPU_state;
 

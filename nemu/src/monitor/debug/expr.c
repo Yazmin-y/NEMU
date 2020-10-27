@@ -5,9 +5,12 @@
  */
 #include <sys/types.h>
 #include <regex.h>
+// #include <elf.h>
+
+#define max_str_len 32
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER
+	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER, MARK
 
 	/* TODO: Add more token types */
 
@@ -23,6 +26,23 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 
+	{"\\b[0-9]+\\b",NUMBER,0},				// number
+	{"\\b0[xX][0-9a-fA-F]+\\b",HNUMBER,0},		// 16 number
+	{"\\$[a-zA-Z]+",REGISTER,0},				// register
+	{"\\b[a-zA-Z_0-9]+", MARK, 0},		// mark
+	{"!=",NEQ,3},						// not equal	
+	{"!",'!',6},						// not
+	{"\\*",'*',5},						// mul
+	{"/",'/',5},						// div
+	{"	+",NOTYPE,0},					// tabs
+	{" +",NOTYPE,0},					// spaces
+	{"\\+",'+',4},						// plus
+	{"-",'-',4},						// sub
+	{"==", EQ,3},						// equal
+	{"&&",AND,2},						// and
+	{"\\|\\|",OR,1},						// or
+	{"\\(",'(',7},                        // left bracket   
+	{"\\)",')',7},                        // right bracket 
 	{"[0-9]+",NUMBER,0},				// number
 	{"0[xX][0-9a-fA-F]+",HNUMBER,0},	// 16 number
 	{"\\$[a-z,A-Z]+",REGISTER,0},		// register
@@ -70,6 +90,8 @@ typedef struct token {
 
 Token tokens[32];
 int nr_token;
+
+uint32_t get_addr_from_mark(char *mark);
 
 static bool make_token(char *e) {
 	int position = 0;
@@ -148,7 +170,7 @@ int dominant_operator (int l,int r)
 	int oper = l;
 	for (i = l; i <= r;i ++)
 	{
-		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER)
+		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER || tokens[i].type == MARK)
 			continue;
 		int cnt = 0;
 		bool key = true;
@@ -171,6 +193,7 @@ int dominant_operator (int l,int r)
  	}
 	return oper;
 }
+
 uint32_t eval(int l,int r) {
 	if (l > r)
 	{
@@ -178,47 +201,57 @@ uint32_t eval(int l,int r) {
 		return 0;
 	}
 	if (l == r) {
-	uint32_t num = 0;
-	if (tokens[l].type == NUMBER)
-		sscanf(tokens[l].str,"%d",&num);
-	if (tokens[l].type == HNUMBER)
-		sscanf(tokens[l].str,"%x",&num);
-	if (tokens[l].type == REGISTER)
+		uint32_t num = 0;
+		if (tokens[l].type == NUMBER)
+			sscanf(tokens[l].str,"%d",&num);
+		if (tokens[l].type == HNUMBER)
+			sscanf(tokens[l].str,"%x",&num);
+		if (tokens[l].type == REGISTER)
 		{
-			if (strlen (tokens[l].str) == 3) {
-			int i;
-			for (i = R_EAX; i <= R_EDI; i ++) {
-				if (strcmp (tokens[l].str,regsl[i]) == 0) break;
-			}
-			if (i > R_EDI) 
+			if (strlen (tokens[l].str) == 3) 
 			{
-				if (strcmp (tokens[l].str,"eip") == 0) num = cpu.eip;
-				else Assert(1,"no this register!\n");
-			}
-			else num = reg_l(i);
+				int i;
+				for (i = R_EAX; i <= R_EDI; i ++) {
+					if (strcmp (tokens[l].str,regsl[i]) == 0) break;
+				}
+				if (i > R_EDI) 
+				{
+					if (strcmp (tokens[l].str,"eip") == 0) num = cpu.eip;
+					else Assert(1,"no this register!\n");
+				}
+				else num = reg_l(i);
  			}
- 			else if (strlen (tokens[l].str) == 2) {
- 			if (tokens[l].str[1] == 'x' || tokens[l].str[1] == 'p' || tokens[l].str[1] == 'i') 
+
+ 			else if (strlen (tokens[l].str) == 2) 
 			{
-				int i;
-				for (i = R_AX; i <= R_DI; i ++) 
+ 				if (tokens[l].str[1] == 'x' || tokens[l].str[1] == 'p' || tokens[l].str[1] == 'i') 
 				{
-					if (strcmp (tokens[l].str,regsw[i]) == 0) break;
+					int i;
+					for (i = R_AX; i <= R_DI; i ++) 
+					{
+						if (strcmp (tokens[l].str,regsw[i]) == 0) break;
+					}
+					num = reg_w(i);
 				}
-				num = reg_w(i);
-			}
- 			else if (tokens[l].str[1] == 'l' || tokens[l].str[1] == 'h') 
-			{
-				int i;
-				for (i = R_AL; i <= R_BH; i ++)
+ 				else if (tokens[l].str[1] == 'l' || tokens[l].str[1] == 'h') 
 				{
-					if (strcmp (tokens[l].str,regsb[i]) == 0)break;
+					int i;
+					for (i = R_AL; i <= R_BH; i ++)
+					{
+						if (strcmp (tokens[l].str,regsb[i]) == 0)break;
+					}
+					num = reg_b(i);
 				}
-				num = reg_b(i);
-			}
-			else assert (1);
+				else assert (1);
 			}
 		}
+
+		if (tokens[l].type == MARK)
+		{
+			num = get_addr_from_mark(tokens[l].str);
+			printf("%s", tokens[1].str);
+		}
+		
 	
 		return num;
 	}
@@ -270,11 +303,11 @@ uint32_t expr(char *e, bool *success) {
 	}
 	int i;
 	for (i = 0;i < nr_token; i ++) {
- 		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
+ 		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')' && tokens[i - 1].type != MARK))) {
 			tokens[i].type = POINTER;
 			tokens[i].priority = 6;
 		}
-		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')'))) {
+		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type !=')' && tokens[i - 1].type != MARK))) {
 			tokens[i].type = MINUS;
 			tokens[i].priority = 6;
  		}

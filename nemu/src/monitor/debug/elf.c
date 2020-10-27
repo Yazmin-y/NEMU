@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <elf.h>
 
+#define max_str_len 32
+
 char *exec_file = NULL;
 
 static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
+
+
 
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
@@ -81,3 +85,43 @@ void load_elf_tables(int argc, char *argv[]) {
 	fclose(fp);
 }
 
+uint32_t get_addr_from_mark(char *mark) {
+	int i;
+	uint32_t num = 0;
+	for (i = 0; i < nr_symtab_entry; i++)
+	{
+		if ((symtab[i].st_info&0xf) == STT_OBJECT)
+		{
+			char tmp[max_str_len];
+			// int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+			strcpy(tmp, strtab+symtab[i].st_name);
+			
+			if (strcmp(tmp, mark) == 0)
+			{
+				num = symtab[i].st_value;
+				return num;
+			}	
+		}
+	}
+	printf("no matching mark!\n");
+	return num;
+}
+
+void get_func_from_addr(char *tmp, swaddr_t addr) {
+	int i;
+	for (i = 0; i < nr_symtab_entry; i++)
+	{
+		if (symtab[i].st_value <= addr 
+		&& symtab[i].st_value + symtab[i].st_size >= addr
+		&& (symtab[i].st_info&0xf) == STT_FUNC)
+		{
+			// tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+			strcpy(tmp, strtab+symtab[i].st_name);
+			return;
+		}
+		
+	}
+	printf("No matching function!\n");
+	// tmp[0] = '/0';
+	return;
+}
