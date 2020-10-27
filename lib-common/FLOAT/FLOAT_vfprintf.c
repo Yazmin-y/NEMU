@@ -46,7 +46,7 @@ static void modify_vfprintf() {
 	 */
 	int addr = &_vfprintf_internal;
 
-	mprotect((void *)((addr+0x306 - 0x64) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
+	// mprotect((void *)((addr+0x306 - 0x64) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
 	
 
 	char *sub = (char*)(addr + 0x306 - 0xb);
@@ -123,7 +123,7 @@ static void modify_ppfs_setargs() {
 	 * the modification.
 	 */
 	int addr = &_ppfs_setargs;
-	mprotect((void*)((addr+0x73-0x64) & 0xfffff000), 4096*2, PROT_READ | PROT_WRITE | PROT_EXEC);
+	// mprotect((void*)((addr+0x73-0x64) & 0xfffff000), 4096*2, PROT_READ | PROT_WRITE | PROT_EXEC);
 	char *pos = (char *)(addr + 0x71);
 	*pos = 0xeb;
 
