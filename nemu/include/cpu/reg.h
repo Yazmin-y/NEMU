@@ -14,7 +14,7 @@ enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
  * For more details about the register encoding scheme, see i386 manual.
  */
 
-typedef struct 
+/* typedef struct 
 {
 	uint32_t base_addr;
 	uint16_t seg_limit;
@@ -39,7 +39,7 @@ typedef struct
 		uint32_t base;
 		uint32_t limit;
 	} cache;
-} SREG;
+} SREG; */
 
 typedef struct {
 	union {
