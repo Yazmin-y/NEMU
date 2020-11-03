@@ -103,7 +103,7 @@ int readCache2(hwaddr_t addr) {
 
     for ( j = 0; j < L2_CACHE_BLOCK_SIZE/BURST_LEN; j++)    
     {
-        ddr3_read_public(block + j*BURST_LEN, l2_cache[i].data + j+BURST_LEN);
+        ddr3_read_public(block + j*BURST_LEN, l2_cache[i].data + j * BURST_LEN);
     }
 
     l2_cache[i].valid = true;
