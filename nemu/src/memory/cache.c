@@ -17,12 +17,16 @@ void resetCache() {
     for ( i = 0; i < L1_CACHE_SET_SIZE * L1_CACHE_WAY_SIZE; i++)
     {
         l1_cache[i].valid = false;
+        l1_cache[i].tag = 0;
+        memset(l1_cache[i].data, 0, L1_CACHE_BLOCK_SIZE);
     }
 
     for ( i = 0; i < L2_CACHE_SET_SIZE * L2_CACHE_WAY_SIZE ; i++)
     {
         l2_cache[i].valid = false;
         l2_cache[i].dirty = false;
+        l2_cache[i].tag = 0;
+        memset(l2_cache[i].data, 0, L2_CACHE_BLOCK_SIZE);
     }
     
     
