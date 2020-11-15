@@ -87,7 +87,7 @@ int readCache2(hwaddr_t addr) {
     uint32_t tag = addr >> (L2_CACHE_BLOCK_SIZE_BIT + L2_CACHE_SET_BIT);
     uint32_t set = (addr>>L2_CACHE_BLOCK_SIZE_BIT) & (L2_CACHE_SET_SIZE - 1);
     uint32_t block = (addr>>L2_CACHE_BLOCK_SIZE_BIT) << L2_CACHE_BLOCK_SIZE_BIT;
-    int i = 0, j = 0;
+    int i = 0, j;
     for ( i = L2_CACHE_WAY_SIZE*set; i < L2_CACHE_WAY_SIZE*(set+1); i++)
     {
         if (l2_cache[i].tag == tag && l2_cache[i].valid) return i;
