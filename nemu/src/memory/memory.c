@@ -23,9 +23,9 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	}
 
 	int zero = 0;
-	uint32_t tmp = unalign_rw(temp+zero, 4) & (~0u >> ((4 - len) << 3));
+	uint32_t ans = unalign_rw(temp+zero, 4) & (~0u >> ((4 - len) << 3));
 	
-	return tmp;
+	return ans;
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
