@@ -3,7 +3,7 @@
 #define instr scas
 
 make_helper(concat(scas_n_, SUFFIX)) {
-    swaddr_t s1 = REG(R_EAX), s2 = swaddr_read(reg_l(R_EDI), DATA_BYTE);
+    swaddr_t s1 = REG(R_EAX), s2 = swaddr_read(reg_l(R_EDI), DATA_BYTE, R_ES);
     uint32_t res = s1- s2;
     if (cpu.DF == 0)
     {

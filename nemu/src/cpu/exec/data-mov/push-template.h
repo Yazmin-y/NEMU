@@ -8,7 +8,7 @@ static void do_execute() {
         op_src->val = (int8_t)op_src->val;
     }
     reg_l(R_ESP) -= 4;
-    swaddr_write(reg_l(R_ESP), 4, op_src->val);
+    swaddr_write(reg_l(R_ESP), 4, op_src->val, R_SS);
     print_asm_no_template1();
     
 }
