@@ -41,6 +41,7 @@
 #include "string/stos.h"
 #include "string/lods.h"
 #include "string/scas.h"
+#include "string/cld.h"
 
 #include "misc/misc.h"
 
